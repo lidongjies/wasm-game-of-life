@@ -1,9 +1,16 @@
 mod utils;
 
 extern crate js_sys;
+extern crate web_sys;
 
 use std::fmt;
 use wasm_bindgen::prelude::*;
+
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -38,14 +45,25 @@ impl Universe {
         }
         count
     }
+
+    pub fn get_cells(&self) -> &[Cell] {
+        &self.cells
+    }
+
+    pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
+        for (row, col) in cells.iter().cloned() {
+            let idx = self.get_index(row, col);
+            self.cells[idx] = Cell::Alive
+        }
+    }
 }
 
 #[wasm_bindgen]
 impl Universe {
     pub fn new() -> Universe {
+        utils::set_panic_hook();
         let width = 64;
         let height = 64;
-
         let cells = (0..width * height)
             .map(|_| {
                 if js_sys::Math::random() < 0.5 {
@@ -55,7 +73,6 @@ impl Universe {
                 }
             })
             .collect();
-
         Universe {
             width,
             height,
@@ -67,8 +84,18 @@ impl Universe {
         self.width
     }
 
+    pub fn set_width(&mut self, width: u32) {
+        self.width = width;
+        self.cells = (0..width * self.height).map(|_| Cell::Dead).collect();
+    }
+
     pub fn height(&self) -> u32 {
         self.height
+    }
+
+    pub fn set_height(&mut self, height: u32) {
+        self.height = height;
+        self.cells = (0..self.width * height).map(|_| Cell::Dead).collect();
     }
 
     pub fn cells(&self) -> *const Cell {
@@ -85,15 +112,22 @@ impl Universe {
             for col in 0..self.width {
                 let idx = self.get_index(row, col);
                 let cell = self.cells[idx];
-                let neigbhor_count = self.live_neighbor_count(row, col);
-
-                let next_cell = match (cell, neigbhor_count) {
+                let live_neighbors = self.live_neighbor_count(row, col);
+                log!(
+                    "cell[{}, {}] is initially {:?} and has {} live neighbors",
+                    row,
+                    col,
+                    cell,
+                    live_neighbors
+                );
+                let next_cell = match (cell, live_neighbors) {
                     (Cell::Alive, x) if x < 2 => Cell::Dead,
                     (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
                     (Cell::Alive, x) if x > 3 => Cell::Dead,
                     (Cell::Dead, 3) => Cell::Alive,
                     (otherwise, _) => otherwise,
                 };
+                log!("    it becomes {:?}", next_cell);
                 next[idx] = next_cell;
             }
         }
