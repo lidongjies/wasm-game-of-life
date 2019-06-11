@@ -6,6 +6,7 @@ extern crate web_sys;
 use std::fmt;
 use wasm_bindgen::prelude::*;
 
+// macro rule
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
@@ -26,8 +27,8 @@ pub struct Universe {
 }
 
 impl Universe {
-    fn get_index(&self, row: u32, column: u32) -> usize {
-        (row * self.width + column) as usize
+    fn get_index(&self, row: u32, col: u32) -> usize {
+        (row * self.width + col) as usize
     }
 
     fn live_neighbor_count(&self, row: u32, column: u32) -> u8 {
@@ -38,8 +39,8 @@ impl Universe {
                     continue;
                 }
                 let neighbor_row = (row + detal_row) % self.height;
-                let nrighbor_col = (column + detal_col) % self.width;
-                let idx = self.get_index(neighbor_row, nrighbor_col);
+                let neighbor_col = (column + detal_col) % self.width;
+                let idx = self.get_index(neighbor_row, neighbor_col);
                 count += self.cells[idx] as u8;
             }
         }
@@ -102,10 +103,6 @@ impl Universe {
         self.cells.as_ptr()
     }
 
-    pub fn render(&self) -> String {
-        self.to_string()
-    }
-
     pub fn tick(&mut self) {
         let mut next = self.cells.clone();
         for row in 0..self.height {
@@ -113,13 +110,13 @@ impl Universe {
                 let idx = self.get_index(row, col);
                 let cell = self.cells[idx];
                 let live_neighbors = self.live_neighbor_count(row, col);
-                log!(
-                    "cell[{}, {}] is initially {:?} and has {} live neighbors",
-                    row,
-                    col,
-                    cell,
-                    live_neighbors
-                );
+                // log!(
+                //     "cell[{}, {}] is initially {:?} and has {} live neighbors",
+                //     row,
+                //     col,
+                //     cell,
+                //     live_neighbors
+                // );
                 let next_cell = match (cell, live_neighbors) {
                     (Cell::Alive, x) if x < 2 => Cell::Dead,
                     (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
@@ -127,11 +124,20 @@ impl Universe {
                     (Cell::Dead, 3) => Cell::Alive,
                     (otherwise, _) => otherwise,
                 };
-                log!("    it becomes {:?}", next_cell);
+                // log!("    it becomes {:?}", next_cell);
                 next[idx] = next_cell;
             }
         }
         self.cells = next;
+    }
+
+    pub fn render(&self) -> String {
+        self.to_string()
+    }
+
+    pub fn toggle_cell(&mut self, row: u32, col: u32) {
+        let idx = self.get_index(row, col);
+        self.cells[idx].toggle();
     }
 }
 
@@ -155,4 +161,13 @@ impl fmt::Display for Universe {
 pub enum Cell {
     Dead = 0,
     Alive = 1,
+}
+
+impl Cell {
+    fn toggle(&mut self) {
+        *self = match *self {
+            Cell::Alive => Cell::Dead,
+            Cell::Dead => Cell::Alive,
+        }
+    }
 }

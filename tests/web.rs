@@ -4,7 +4,7 @@ extern crate wasm_bindgen_test;
 extern crate wasm_game_of_life;
 
 use wasm_bindgen_test::*;
-use wasm_game_of_life::Universe;
+use wasm_game_of_life::{Cell, Universe};
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -32,4 +32,12 @@ pub fn test_tick() {
     let expected_universe = expected_spaceship();
     input_universe.tick();
     assert_eq!(&input_universe.get_cells(), &expected_universe.get_cells());
+}
+
+#[wasm_bindgen_test]
+pub fn test_toggle() {
+    let mut input_universe = input_spaceship();
+    let idx = 1 * 6 + 2;
+    input_universe.toggle_cell(1, 2);
+    assert_eq!(input_universe.get_cells()[idx], Cell::Dead);
 }
