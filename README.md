@@ -67,3 +67,16 @@ wasm-pack publish
   for logging panic messages to the developer console.
 * [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
   for small code size.
+
+## TODO
+1. 添加输入控件
+   1. reset and init control
+   2. shape template
+2. 优化执行时间
+   1. proformance panel => 定位
+   2. fillStyle => higher scope
+   3. canvas => webgl
+   4. benchmark + pref 定位代码执行
+3. 优化文件大小
+   1. https://rustwasm.github.io/docs/book/game-of-life/code-size.html
+   2. https://rustwasm.github.io/docs/book/reference/code-size.html#use-the-wasm-snip-tool
