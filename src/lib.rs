@@ -1,11 +1,11 @@
 mod utils;
 
 extern crate fixedbitset;
+extern crate js_sys;
 
 use fixedbitset::FixedBitSet;
 use wasm_bindgen::prelude::*;
 
-// macro rule
 // macro_rules! log {
 //     ( $( $t:tt )* ) => {
 //         web_sys::console::log_1(&format!( $( $t )* ).into());
@@ -67,15 +67,28 @@ impl Universe {
         let size = (width * height) as usize;
         let mut cells = FixedBitSet::with_capacity(size);
 
-        // fixed bitset
         for i in 0..size {
-            cells.set(i, i % 2 == 0 || i % 7 == 0);
+            cells.set(i, js_sys::Math::random() > 0.6);
         }
 
         Universe {
             width,
             height,
             cells,
+        }
+    }
+
+    pub fn init(&mut self) {
+        let size = (self.width * self.height) as usize;
+        for i in 0..size {
+            self.cells.set(i, js_sys::Math::random() > 0.6);
+        }
+    }
+
+    pub fn reset(&mut self) {
+        let size = (self.width * self.height) as usize;
+        for i in 0..size {
+            self.cells.set(i, false);
         }
     }
 
