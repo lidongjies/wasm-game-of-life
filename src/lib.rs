@@ -4,6 +4,7 @@ extern crate fixedbitset;
 extern crate js_sys;
 
 use fixedbitset::FixedBitSet;
+use utils::Timer;
 use wasm_bindgen::prelude::*;
 
 // macro_rules! log {
@@ -125,6 +126,7 @@ impl Universe {
     }
 
     pub fn tick(&mut self) {
+        let _timer = Timer::new("Universe:tick");
         let mut next = self.cells.clone();
         for row in 0..self.height {
             for col in 0..self.width {
