@@ -5,7 +5,7 @@ extern crate js_sys;
 
 use fixedbitset::FixedBitSet;
 use utils::Timer;
-use wasm_bindgen::prelude::*;
+// use wasm_bindgen::prelude::*;
 
 // macro_rules! log {
 //     ( $( $t:tt )* ) => {
@@ -18,7 +18,7 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[wasm_bindgen]
+// #[wasm_bindgen]
 pub struct Universe {
     width: u32,
     height: u32,
@@ -58,7 +58,7 @@ impl Universe {
     }
 }
 
-#[wasm_bindgen]
+// #[wasm_bindgen]
 impl Universe {
     pub fn new() -> Universe {
         utils::set_panic_hook();
@@ -127,24 +127,34 @@ impl Universe {
 
     pub fn tick(&mut self) {
         let _timer = Timer::new("Universe:tick");
-        let mut next = self.cells.clone();
-        for row in 0..self.height {
-            for col in 0..self.width {
-                let idx = self.get_index(row, col);
-                let cell = self.cells[idx];
-                let live_neighbors = self.live_neighbor_count(row, col);
 
-                let enable = match (cell, live_neighbors) {
-                    (true, x) if x < 2 => false,
-                    (true, 2) | (true, 3) => true,
-                    (true, x) if x > 3 => false,
-                    (false, 3) => true,
-                    (otherwise, _) => otherwise,
-                };
+        let mut next = {
+            let _timer = Timer::new("alloc new cells");
+            self.cells.clone()
+        };
 
-                next.set(idx, enable);
+        {
+            let _timer = Timer::new("new generation");
+            for row in 0..self.height {
+                for col in 0..self.width {
+                    let idx = self.get_index(row, col);
+                    let cell = self.cells[idx];
+                    let live_neighbors = self.live_neighbor_count(row, col);
+
+                    let enable = match (cell, live_neighbors) {
+                        (true, x) if x < 2 => false,
+                        (true, 2) | (true, 3) => true,
+                        (true, x) if x > 3 => false,
+                        (false, 3) => true,
+                        (otherwise, _) => otherwise,
+                    };
+
+                    next.set(idx, enable);
+                }
             }
-        }
+        };
+
+        let _timer = Timer::new("free old cells");
         self.cells = next;
     }
 
