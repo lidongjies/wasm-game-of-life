@@ -1,82 +1,80 @@
-<div align="center">
+## 介绍
+这是一个 Conway‘s game of life 的 wasm 模块，使用 webpack4 在 ES Module 项目中使用，可以通过该模块实现游戏游戏对 wasm 性能有初步的了解，[webassembly 兼容性](https://caniuse.com/#search=webassembly)。
 
-  <h1><code>wasm-pack-template</code></h1>
+## API
 
-  <strong>A template for kick starting a Rust and WebAssembly project using <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a>.</strong>
-
-  <p>
-    <a href="https://travis-ci.org/rustwasm/wasm-pack-template"><img src="https://img.shields.io/travis/rustwasm/wasm-pack-template.svg?style=flat-square" alt="Build Status" /></a>
-  </p>
-
-  <h3>
-    <a href="https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html">Tutorial</a>
-    <span> | </span>
-    <a href="https://discordapp.com/channels/442252698964721669/443151097398296587">Chat</a>
-  </h3>
-
-  <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
-</div>
-
-## About
-
-[**📚 Read this template tutorial! 📚**][template-docs]
-
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting package to NPM.
-
-Be sure to check out [other `wasm-pack` tutorials online][tutorials] for other
-templates and usages of `wasm-pack`.
-
-[tutorials]: https://rustwasm.github.io/docs/wasm-pack/tutorials/index.html
-[template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
-
-## 🚴 Usage
-
-### 🐑 Use `cargo generate` to Clone this Template
-
-[Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
-
-```
-cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
-cd my-project
+```rust
+struct Universe {
+  width: usize,
+  height: usize,
+  cells: &[u8],
+};
 ```
 
-### 🛠️ Build with `wasm-pack build`
+### new()
 
-```
-wasm-pack build
-```
+默认构造一个64*64 bit的数组
 
-### 🔬 Test in Headless Browsers with `wasm-pack test`
-
-```
-wasm-pack test --headless --firefox
+```javascript
+const universe = Universe.new();
 ```
 
-### 🎁 Publish to NPM with `wasm-pack publish`
+### init()
 
+重置数组
+
+```javascript
+universe.init();
 ```
-wasm-pack publish
+
+### reset()
+
+置空数组
+
+```javascript
+universe.reset();
 ```
 
-## 🔋 Batteries Included
+### cells()
 
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
+获取数组头内存地址
+
+```javascript
+import { memory } from 'wasm-game-of-life/wasm_game_of_life_bg'
+const { width, height } = universe;
+const cellsPtr = universe.cells()
+const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8)
+```
+
+### tick()
+
+获取新的数组
+
+```javascript
+function renderLoop() {
+	universe.tick()
+	drawSomething()
+	requestAnimationFrame(renderLoop)
+}
+```
+
+### toggle_cell()
+
+反转某一格的状态
+
+```javascript
+universe.toggle_cell(row, col);
+```
 
 ## TODO
 1. 添加输入控件
-   1. reset and init control
-   2. shape template
+   [x] reset and init control
+   [] shape template
 2. 优化执行时间
-   1. proformance panel => 定位
-   2. fillStyle => higher scope
-   3. canvas => webgl
-   4. benchmark + pref 定位代码执行
+   [x] proformance panel => 定位
+   [x] fillStyle => higher scope
+   [] canvas => webgl WIP
+   [] benchmark + pref 定位代码执行
 3. 优化文件大小
-   1. https://rustwasm.github.io/docs/book/game-of-life/code-size.html
-   2. https://rustwasm.github.io/docs/book/reference/code-size.html#use-the-wasm-snip-tool
+   [x] https://rustwasm.github.io/docs/book/game-of-life/code-size.html
+   [x] https://rustwasm.github.io/docs/book/reference/code-size.html#use-the-wasm-snip-tool

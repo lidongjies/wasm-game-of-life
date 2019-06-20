@@ -33,6 +33,6 @@
 		"copy-webpack-plugin": "^5.0.0"
 	},
 	"dependencies": {
-		"wasm-game-of-life": "file:../pkg"
+		"@bezos/wasm-game-of-life": "^1.0.0"
 	}
 }
