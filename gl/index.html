@@ -4,11 +4,28 @@
         <meta charset="utf-8" />
         <title>wasm-game-of-life</title>
         <link rel="stylesheet" href="index.css" />
-        <script src="https://unpkg.com/gl-renderer/dist/gl-renderer.js"></script>
     </head>
     <body>
         <canvas id="gl-bg" width="512" height="512"></canvas>
         <canvas id="gl-fg" width="512" height="512"></canvas>
+        <script id="2d-vertex-shader" type="x-shader/x-vertex">
+            attribute vec2 a_position;
+            uniform mat3 u_matrix;
+
+            void main() {
+              // gl_Position = vec4(a_position, 0, 1.0);
+              gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+            }
+        </script>
+        <script id="2d-fragment-shader" type="x-shader/x-fragment">
+            precision mediump float;
+
+            void main() {
+              gl_FragColor = vec4(0, 0, 0, 1.0);
+            }
+        </script>
+        <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+        <script src="https://webglfundamentals.org/webgl/resources/m3.js"></script>
         <script src="./bootstrap.js"></script>
     </body>
 </html>
