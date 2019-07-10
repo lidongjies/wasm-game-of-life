@@ -1,5 +1,10 @@
 ## 介绍
+
 这是一个 Conway‘s game of life 的 wasm 模块，使用 webpack4 在 ES Module 项目中使用，可以通过该模块实现游戏游戏对 wasm 性能有初步的了解，[webassembly 兼容性](https://caniuse.com/#search=webassembly)。
+
+## 安装
+
+`npm install @bezos/wasm-game-of-life --save`
 
 ## API
 
@@ -13,10 +18,11 @@ struct Universe {
 
 ### new()
 
-默认构造一个64*64 bit的数组
+默认构造一个 64\*64 bit 的数组
 
 ```javascript
-const universe = Universe.new();
+import { Universe } from '@bezos/wasm-game-of-life'
+const universe = Universe.new()
 ```
 
 ### init()
@@ -24,7 +30,7 @@ const universe = Universe.new();
 重置数组
 
 ```javascript
-universe.init();
+universe.init()
 ```
 
 ### reset()
@@ -32,7 +38,7 @@ universe.init();
 置空数组
 
 ```javascript
-universe.reset();
+universe.reset()
 ```
 
 ### cells()
@@ -40,8 +46,8 @@ universe.reset();
 获取数组头内存地址
 
 ```javascript
-import { memory } from 'wasm-game-of-life/wasm_game_of_life_bg'
-const { width, height } = universe;
+import { memory } from '@bezos/wasm-game-of-life/wasm_game_of_life_bg'
+const { width, height } = universe
 const cellsPtr = universe.cells()
 const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8)
 ```
@@ -52,9 +58,9 @@ const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8)
 
 ```javascript
 function renderLoop() {
-	universe.tick()
-	drawSomething()
-	requestAnimationFrame(renderLoop)
+    universe.tick()
+    drawSomething()
+    requestAnimationFrame(renderLoop)
 }
 ```
 
@@ -63,18 +69,29 @@ function renderLoop() {
 反转某一格的状态
 
 ```javascript
-universe.toggle_cell(row, col);
+universe.toggle_cell(row, col)
 ```
 
 ## TODO
+
 1. 添加输入控件
-   [x] reset and init control
-   [] shape template
+
+    [x] reset and init control
+
+    [] shape template
+
 2. 优化执行时间
-   [x] proformance panel => 定位
-   [x] fillStyle => higher scope
-   [] canvas => webgl WIP
-   [] benchmark + pref 定位代码执行
+
+    [x] proformance panel => 定位
+
+    [x] fillStyle => higher scope
+
+    [] canvas => webgl WIP
+
+    [] benchmark + pref 定位代码执行
+
 3. 优化文件大小
-   [x] https://rustwasm.github.io/docs/book/game-of-life/code-size.html
-   [x] https://rustwasm.github.io/docs/book/reference/code-size.html#use-the-wasm-snip-tool
+
+    [x] https://rustwasm.github.io/docs/book/game-of-life/code-size.html
+
+    [x] https://rustwasm.github.io/docs/book/reference/code-size.html#use-the-wasm-snip-tool
