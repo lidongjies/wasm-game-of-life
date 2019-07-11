@@ -1,12 +1,12 @@
-## 介绍
+## Introduction
 
 这是一个 Conway‘s game of life 的 wasm 模块，使用 webpack4 在 ES Module 项目中使用，可以通过该模块实现游戏游戏对 wasm 性能有初步的了解，[webassembly 兼容性](https://caniuse.com/#search=webassembly)。
 
-## 安装
+## Install
 
 `npm install @bezos/wasm-game-of-life --save`
 
-## API
+## Structure
 
 ```rust
 struct Universe {
@@ -15,6 +15,8 @@ struct Universe {
   cells: &[u8],
 };
 ```
+
+## API
 
 ### new()
 
@@ -27,7 +29,7 @@ const universe = Universe.new()
 
 ### init()
 
-重置数组
+初始化cells
 
 ```javascript
 universe.init()
@@ -35,7 +37,7 @@ universe.init()
 
 ### reset()
 
-置空数组
+清空cells
 
 ```javascript
 universe.reset()
@@ -43,7 +45,7 @@ universe.reset()
 
 ### cells()
 
-获取数组头内存地址
+获取cells内存地址
 
 ```javascript
 import { memory } from '@bezos/wasm-game-of-life/wasm_game_of_life_bg'
@@ -54,44 +56,20 @@ const cells = new Uint8Array(memory.buffer, cellsPtr, (width * height) / 8)
 
 ### tick()
 
-获取新的数组
+根据上一个状态更新cells
 
 ```javascript
-function renderLoop() {
+requestAnimationFrame(function renderLoop() {
     universe.tick()
     drawSomething()
     requestAnimationFrame(renderLoop)
-}
+})
 ```
 
-### toggle_cell()
+### toggle_cell(row, col)
 
-反转某一格的状态
+根据为止反转状态
 
 ```javascript
 universe.toggle_cell(row, col)
 ```
-
-## TODO
-
-1. 添加输入控件
-
-    [x] reset and init control
-
-    [] shape template
-
-2. 优化执行时间
-
-    [x] proformance panel => 定位
-
-    [x] fillStyle => higher scope
-
-    [] canvas => webgl WIP
-
-    [] benchmark + pref 定位代码执行
-
-3. 优化文件大小
-
-    [x] https://rustwasm.github.io/docs/book/game-of-life/code-size.html
-
-    [x] https://rustwasm.github.io/docs/book/reference/code-size.html#use-the-wasm-snip-tool

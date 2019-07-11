@@ -2,9 +2,6 @@ import { memory } from '@bezos/wasm-game-of-life/wasm_game_of_life_bg'
 import { Universe } from '@bezos/wasm-game-of-life'
 // import FPS from '../fps'
 
-// fps tool
-// let fps = new FPS('#fps')
-
 const CELL_SIZE = 5
 const GRID_COLOR = '#CCCCCC'
 const DEAD_COLOR = '#FFFFFF'
@@ -17,6 +14,7 @@ const playPauseBtn = document.getElementById('play-pause')
 const randomInit = document.getElementById('random-init')
 const reset = document.getElementById('reset')
 
+// let fps = new FPS('#fps')
 const universe = Universe.new()
 const width = universe.width()
 const height = universe.height()
@@ -66,25 +64,6 @@ function drawCells() {
       ctx.fillRect(col * (CELL_SIZE + 1) + 1, row * (CELL_SIZE + 1) + 1, CELL_SIZE, CELL_SIZE)
     }
   }
-
-  // 优化ctx.fillStyle，怀疑浏览器做了优化，将ctx.fillStyle没效果
-  // ctx.fillStyle = ALIVE_COLOR
-  // for (let row = 0; row < height; row++) {
-  // 	for (let col = 0; col < width; col++) {
-  // 		const idx = getIndex(row, col)
-  // 		if (!bitInSet(idx, cells)) continue
-  // 		ctx.fillRect(col * (CELL_SIZE + 1) + 1, row * (CELL_SIZE + 1) + 1, CELL_SIZE, CELL_SIZE)
-  // 	}
-  // }
-
-  // ctx.fillStyle = DEAD_COLOR
-  // for (let row = 0; row < height; row++) {
-  // 	for (let col = 0; col < width; col++) {
-  // 		const idx = getIndex(row, col)
-  // 		if (bitInSet(idx, cells)) continue
-  // 		ctx.fillRect(col * (CELL_SIZE + 1) + 1, row * (CELL_SIZE + 1) + 1, CELL_SIZE, CELL_SIZE)
-  // 	}
-  // }
 
   ctx.stroke()
 }
