@@ -81,12 +81,12 @@ function isPaused() {
 }
 
 function play() {
-  playPauseBtn.textContent = '暂停'
+  playPauseBtn.textContent = 'Pause'
   renderLoop()
 }
 
 function pause() {
-  playPauseBtn.textContent = '继续'
+  playPauseBtn.textContent = 'Play'
   cancelAnimationFrame(animationId)
   animationId = null
 }
