@@ -1,6 +1,6 @@
 import { memory } from '@bezos/wasm-game-of-life/wasm_game_of_life_bg'
 import { Universe } from '@bezos/wasm-game-of-life'
-// import FPS from '../fps'
+import FPS from './fps'
 
 const CELL_SIZE = 5
 const GRID_COLOR = '#CCCCCC'
@@ -14,8 +14,11 @@ const playPauseBtn = document.getElementById('play-pause')
 const randomInit = document.getElementById('random-init')
 const reset = document.getElementById('reset')
 
-// let fps = new FPS('#fps')
+let fps = new FPS('#fps')
 const universe = Universe.new()
+universe.set_height(128)
+universe.set_width(128)
+universe.init()
 const width = universe.width()
 const height = universe.height()
 canvas.width = (CELL_SIZE + 1) * width + 1
@@ -69,7 +72,7 @@ function drawCells() {
 }
 
 function renderLoop() {
-  // fps.render()
+  fps.render()
   universe.tick()
   drawCells()
   animationId = requestAnimationFrame(renderLoop)

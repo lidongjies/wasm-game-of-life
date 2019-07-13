@@ -1,10 +1,15 @@
 import { Universe } from '@bezos/wasm-game-of-life'
 import { memory } from '@bezos/wasm-game-of-life/wasm_game_of_life_bg'
+import FPS from './fps'
 
 const CELL_SIZE = 5
 const GRID_COLOR = '#CCCCCC'
 
+const fps = new FPS('#fps')
 const universe = Universe.new()
+universe.set_height(128)
+universe.set_width(128)
+universe.init()
 const width = universe.width()
 const height = universe.height()
 
@@ -112,6 +117,7 @@ function drawScene() {
 }
 
 requestAnimationFrame(function renderLoop() {
+  fps.render()
   universe.tick()
   drawScene()
   requestAnimationFrame(renderLoop)

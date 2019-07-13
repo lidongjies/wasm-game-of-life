@@ -29,9 +29,17 @@
                 transform: translate(-50%, -50%);
                 z-index: 1;
             }
+
+            #fps {
+                white-space: pre;
+                font-family: monospace;
+                position: absolute;
+                top: 90px;
+            }
         </style>
     </head>
     <body>
+        <div id="fps"></div>
         <canvas id="gl-bg" width="512" height="512"></canvas>
         <canvas id="gl-fg" width="512" height="512"></canvas>
         <script id="2d-vertex-shader" type="x-shader/x-vertex">

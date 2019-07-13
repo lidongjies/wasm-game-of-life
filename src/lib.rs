@@ -187,4 +187,10 @@ impl Universe {
         let prev = self.cells[idx];
         self.cells.set(idx, !prev);
     }
+
+    pub fn set_shape(&mut self, positions: Vec<u32>) {
+        for pos in positions.into_iter() {
+            self.cells.set(pos as usize, true);
+        }
+    }
 }
